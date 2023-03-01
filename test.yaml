@@ -1,0 +1,835 @@
+wagger: "2.0"
+info:
+  description: MFA service is part of OAuth functionality and provide MFA flow.
+  version: 1.0.0
+  title: MFAService
+host: api.hpbp.io
+basePath: /mfa/v1
+schemes:
+  - http
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /sessions/check:
+    get:
+      tags:
+        - Sessions
+      summary: check if user can visit verification page
+      operationId: checkSession
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/VerifyData"
+        400:
+          description: Invalid input
+          schema:
+            $ref: "#/definitions/BadRequestErrorResponse"
+        401:
+          description: Unauthorized token
+          schema:
+            $ref: "#/definitions/UnauthorizedErrorResponse"
+        403:
+          description: No permission to this action
+          schema:
+            $ref: "#/definitions/ForbiddenErrorResponse"
+        404:
+          description: Element not found
+          schema:
+            $ref: "#/definitions/NotFoundErrorResponse"
+        500:
+          description: Internal server error
+          schema:
+            $ref: "#/definitions/InternalServerErrorResponse"
+  /sessions:
+    post:
+      tags:
+        - Sessions
+      summary: create login session
+      operationId: createSession
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: create mfa login session data
+          required: true
+          schema:
+            $ref: "#/definitions/CreateMFASessionData"
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/MFALoginSession"
+        400:
+          description: Invalid input
+          schema:
+            $ref: "#/definitions/BadRequestErrorResponse"
+        401:
+          description: Unauthorized token
+          schema:
+            $ref: "#/definitions/UnauthorizedErrorResponse"
+        403:
+          description: No permission to this action
+          schema:
+            $ref: "#/definitions/ForbiddenErrorResponse"
+        404:
+          description: Element not found
+          schema:
+            $ref: "#/definitions/NotFoundErrorResponse"
+        500:
+          description: Internal server error
+          schema:
+            $ref: "#/definitions/InternalServerErrorResponse"
+    get:
+      tags:
+        - Sessions
+      summary: list login sessions
+      operationId: listSessions
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: limit
+          in: query
+          description: Pagination limit.
+          type: integer
+          required: false
+          default: 15
+        - name: offset
+          in: query
+          description: Pagination offset.
+          type: integer
+          required: false
+          default: 0
+        - name: environment_id
+          in: query
+          description: environment id.
+          type: string
+          required: false
+        - name: user_id
+          in: query
+          description: user id.
+          type: string
+          required: false
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/MFALoginSessionDataPage"
+        400:
+          description: Invalid input
+          schema:
+            $ref: "#/definitions/BadRequestErrorResponse"
+        401:
+          description: Unauthorized token
+          schema:
+            $ref: "#/definitions/UnauthorizedErrorResponse"
+        403:
+          description: No permission to this action
+          schema:
+            $ref: "#/definitions/ForbiddenErrorResponse"
+        404:
+          description: Element not found
+          schema:
+            $ref: "#/definitions/NotFoundErrorResponse"
+        500:
+          description: Internal server error
+          schema:
+            $ref: "#/definitions/InternalServerErrorResponse"
+  /sessions/{session_id}:
+    get:
+      tags:
+        - Sessions
+      summary: get login session
+      operationId: getSession
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: session_id
+          in: path
+          description: session id.
+          type: string
+          required: true
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/MFALoginSession"
+        400:
+          description: Invalid input
+          schema:
+            $ref: "#/definitions/BadRequestErrorResponse"
+        401:
+          description: Unauthorized token
+          schema:
+            $ref: "#/definitions/UnauthorizedErrorResponse"
+        403:
+          description: No permission to this action
+          schema:
+            $ref: "#/definitions/ForbiddenErrorResponse"
+        404:
+          description: Element not found
+          schema:
+            $ref: "#/definitions/NotFoundErrorResponse"
+        500:
+          description: Internal server error
+          schema:
+            $ref: "#/definitions/InternalServerErrorResponse"
+  /verification/send:
+    post:
+      tags:
+        - Verification
+      summary: send verify code
+      operationId: verificationSendCode
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/SuccessResponse"
+        400:
+          description: Invalid input
+          schema:
+            $ref: "#/definitions/BadRequestErrorResponse"
+        401:
+          description: Unauthorized token
+          schema:
+            $ref: "#/definitions/UnauthorizedErrorResponse"
+        403:
+          description: No permission to this action
+          schema:
+            $ref: "#/definitions/ForbiddenErrorResponse"
+        404:
+          description: Element not found
+          schema:
+            $ref: "#/definitions/NotFoundErrorResponse"
+        500:
+          description: Internal server error
+          schema:
+            $ref: "#/definitions/InternalServerErrorResponse"
+  /verification/verify:
+    post:
+      tags:
+        - Verification
+      summary: verify code
+      operationId: verificationVerifyCode
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: verify data
+          required: true
+          schema:
+            $ref: "#/definitions/CodeVerifyData"
+      responses:
+        200:
+          description: verify result
+          schema:
+            $ref: "#/definitions/VerifyData"
+        400:
+          description: Invalid input
+          schema:
+            $ref: "#/definitions/BadRequestErrorResponse"
+        401:
+          description: Unauthorized token
+          schema:
+            $ref: "#/definitions/UnauthorizedErrorResponse"
+        403:
+          description: No permission to this action
+          schema:
+            $ref: "#/definitions/ForbiddenErrorResponse"
+        404:
+          description: Element not found
+          schema:
+            $ref: "#/definitions/NotFoundErrorResponse"
+        500:
+          description: Internal server error
+          schema:
+            $ref: "#/definitions/InternalServerErrorResponse"
+  /devices/send:
+    post:
+      tags:
+        - Devices
+      summary: send device verification code
+      operationId: deviceSendCode
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: device send code data
+          required: true
+          schema:
+            $ref: "#/definitions/DeviceSendCodeData"
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/SuccessResponse"
+        400:
+          description: Invalid input
+          schema:
+            $ref: "#/definitions/BadRequestErrorResponse"
+        401:
+          description: Unauthorized token
+          schema:
+            $ref: "#/definitions/UnauthorizedErrorResponse"
+        403:
+          description: No permission to this action
+          schema:
+            $ref: "#/definitions/ForbiddenErrorResponse"
+        404:
+          description: Element not found
+          schema:
+            $ref: "#/definitions/NotFoundErrorResponse"
+        500:
+          description: Internal server error
+          schema:
+            $ref: "#/definitions/InternalServerErrorResponse"
+  /devices:
+    post:
+      tags:
+        - Devices
+      summary: add verification device
+      operationId: addDevice
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: add device data
+          required: true
+          schema:
+            $ref: "#/definitions/AddDeviceData"
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/SuccessResponse"
+        400:
+          description: Invalid input
+          schema:
+            $ref: "#/definitions/BadRequestErrorResponse"
+        401:
+          description: Unauthorized token
+          schema:
+            $ref: "#/definitions/UnauthorizedErrorResponse"
+        403:
+          description: No permission to this action
+          schema:
+            $ref: "#/definitions/ForbiddenErrorResponse"
+        404:
+          description: Element not found
+          schema:
+            $ref: "#/definitions/NotFoundErrorResponse"
+        500:
+          description: Internal server error
+          schema:
+            $ref: "#/definitions/InternalServerErrorResponse"
+    get:
+      tags:
+        - Devices
+      summary: list user devices
+      operationId: listUserDevices
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: limit
+          in: query
+          description: Pagination limit.
+          type: integer
+          required: false
+          default: 15
+        - name: offset
+          in: query
+          description: Pagination offset.
+          type: integer
+          required: false
+          default: 0
+        - name: environment_id
+          in: query
+          description: environment id.
+          type: string
+          required: false
+        - name: user_id
+          in: query
+          description: user id.
+          type: string
+          required: false
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/UserDeviceDataPage"
+        400:
+          description: Invalid input
+          schema:
+            $ref: "#/definitions/BadRequestErrorResponse"
+        401:
+          description: Unauthorized token
+          schema:
+            $ref: "#/definitions/UnauthorizedErrorResponse"
+        403:
+          description: No permission to this action
+          schema:
+            $ref: "#/definitions/ForbiddenErrorResponse"
+        404:
+          description: Element not found
+          schema:
+            $ref: "#/definitions/NotFoundErrorResponse"
+        500:
+          description: Internal server error
+          schema:
+            $ref: "#/definitions/InternalServerErrorResponse"
+  /devices/{device_id}:
+    get:
+      tags:
+        - Devices
+      summary: get user device
+      operationId: getUserDevivce
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: device_id
+          in: path
+          description: device id.
+          type: string
+          format: uuid4
+          required: true
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/UserDevice"
+        400:
+          description: Invalid input
+          schema:
+            $ref: "#/definitions/BadRequestErrorResponse"
+        401:
+          description: Unauthorized token
+          schema:
+            $ref: "#/definitions/UnauthorizedErrorResponse"
+        403:
+          description: No permission to this action
+          schema:
+            $ref: "#/definitions/ForbiddenErrorResponse"
+        404:
+          description: Element not found
+          schema:
+            $ref: "#/definitions/NotFoundErrorResponse"
+        500:
+          description: Internal server error
+          schema:
+            $ref: "#/definitions/InternalServerErrorResponse"
+    put:
+      tags:
+        - Devices
+      summary: update user device
+      operationId: updateUserDevivce
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: device_id
+          in: path
+          description: device id.
+          type: string
+          format: uuid4
+          required: true
+        - in: body
+          name: body
+          description: update user device data
+          required: true
+          schema:
+            $ref: "#/definitions/UpdateDeviceData"
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/UserDevice"
+        400:
+          description: Invalid input
+          schema:
+            $ref: "#/definitions/BadRequestErrorResponse"
+        401:
+          description: Unauthorized token
+          schema:
+            $ref: "#/definitions/UnauthorizedErrorResponse"
+        403:
+          description: No permission to this action
+          schema:
+            $ref: "#/definitions/ForbiddenErrorResponse"
+        404:
+          description: Element not found
+          schema:
+            $ref: "#/definitions/NotFoundErrorResponse"
+        500:
+          description: Internal server error
+          schema:
+            $ref: "#/definitions/InternalServerErrorResponse"
+definitions:
+  Pagination:
+    description: Pagination variables
+    type: object
+    required:
+      - limit
+      - offset
+      - count
+    properties:
+      limit:
+        type: integer
+        description: Number of elements in page response
+      offset:
+        type: integer
+        description: Number of elements that have to be skipped
+      count:
+        type: integer
+        description: Number of all elements in database for given filter
+  SuccessResponse:
+    type: object
+    properties:
+      code:
+        type: integer
+        description: code
+        default: 200
+        example: 200
+      message:
+        type: string
+        description: message
+        default: Success
+        example: Success
+  BadRequestErrorResponse:
+    type: object
+    properties:
+      code:
+        type: integer
+        description: code
+        default: 400
+        example: 400
+      message:
+        type: string
+        default: Invalid input
+        description: message
+        example: Invalid input
+  UnauthorizedErrorResponse:
+    type: object
+    properties:
+      code:
+        type: integer
+        description: code
+        default: 401
+        example: 401
+      message:
+        type: string
+        description: message
+        default: Unauthorized token
+        example: Unauthorized token
+  ForbiddenErrorResponse:
+    type: object
+    properties:
+      code:
+        type: integer
+        description: code
+        default: 403
+        example: 403
+      message:
+        type: string
+        description: message
+        default: No permission to this action
+        example: No permission to this action
+  NotFoundErrorResponse:
+    type: object
+    properties:
+      code:
+        type: integer
+        description: code
+        default: 404
+        example: 404
+      message:
+        type: string
+        description: message
+        default: Element not found
+        example: Element not found
+  InternalServerErrorResponse:
+    type: object
+    properties:
+      code:
+        type: integer
+        description: code
+        default: 500
+        example: 500
+      message:
+        type: string
+        description: message
+        default: Internal server error
+        example: Internal server error
+  VerifyData:
+    type: object
+    properties:
+      verify:
+        type: boolean
+        description: verify result
+        default: false
+      redirect_uri:
+        type: string
+        description: redirect uri to redirect user after verification
+        format: uri
+        x-nullable: true
+  CreateMFASessionData:
+    allOf:
+      - $ref: "#/definitions/CreateMFASession"
+  CreateMFASession:
+    type: object
+    required:
+      - redirect_uri
+      - identity_id
+      - user_id
+      - environment_id
+      - tenant_id
+    properties:
+      redirect_uri:
+        type: string
+        description: redirect uri to redirect user after verification
+        format: uri
+      device:
+        description: user device data
+        type: string
+      device_type:
+        description: user device type
+        type: string
+        enum:
+          - email
+          - phone
+      identity_id:
+        description: identity id
+        type: string
+        format: uuid4
+      tenant_id:
+        description: tenant id
+        type: string
+      environment_id:
+        description: environment id
+        type: string
+        format: uuid4
+      user_id:
+        description: user id
+        type: string
+        format: uuid4
+      session_duration:
+        description: mfa session duration in seconds
+        type: integer
+        minimum: 600
+        maximum: 43200
+  MFALoginSessionDataPage:
+    allOf:
+      - $ref: "#/definitions/Pagination"
+      - properties:
+          elements:
+            type: array
+            items:
+              $ref: "#/definitions/MFALoginSession"
+  MFALoginSession:
+    type: object
+    properties:
+      id:
+        description: mfa login session id
+        type: string
+        format: uuid4
+      redirect_uri:
+        description: redirect uri to redirect user after verification
+        type: string
+        format: uri
+      otp_session_id:
+        description: otp session id
+        type: string
+      device:
+        description: user device data
+        type: string
+      device_type:
+        description: user device type
+        type: string
+        enum:
+          - email
+          - phone
+      identity_id:
+        description: identity id
+        type: string
+        format: uuid4
+      tenant_id:
+        description: tenant id
+        type: string
+      environment_id:
+        description: environment id
+        type: string
+        format: uuid4
+      user_id:
+        description: user id
+        type: string
+        format: uuid4
+      is_verify:
+        description: is mfa session verified
+        type: boolean
+        default: false
+      session_duration:
+        description: mfa session duration in seconds
+        type: integer
+        minimum: 600
+        maximum: 43200
+      expire_time:
+        description: mfa session expire time
+        type: string
+        format: date-time
+  CodeVerifyData:
+    allOf:
+      - $ref: "#/definitions/CodeVerify"
+  CodeVerify:
+    type: object
+    required:
+      - code
+    properties:
+      code:
+        description: code to verify
+        type: string
+  DeviceSendCodeData:
+    allOf:
+      - $ref: "#/definitions/DeviceSendCode"
+  DeviceSendCode:
+    type: object
+    required:
+      - device
+      - device_type
+      - session_id
+    properties:
+      device:
+        description: user device data
+        type: string
+      device_type:
+        description: user device type
+        type: string
+        enum:
+          - email
+          - phone
+      session_id:
+        description: mfa session id
+        type: string
+        format: uuid4
+      otp_session_id:
+        description: otp session id
+        type: string
+  AddDeviceData:
+    allOf:
+      - $ref: "#/definitions/AddDevice"
+  AddDevice:
+    type: object
+    required:
+      - device
+      - device_type
+      - code
+    properties:
+      device:
+        description: user device data
+        type: string
+      device_type:
+        description: user device type
+        type: string
+        enum:
+          - email
+          - phone
+      code:
+        description: code to verify
+        type: string
+      otp_session_id:
+        description: otp session id
+        type: string
+  UserDeviceDataPage:
+    allOf:
+      - $ref: "#/definitions/Pagination"
+      - properties:
+          elements:
+            type: array
+            items:
+              $ref: "#/definitions/UserDevice"
+  UserDevice:
+    type: object
+    properties:
+      _id:
+        type: string
+        format: uuid4
+      identity_id:
+        description: identity id
+        type: string
+        format: uuid4
+      tenant_id:
+        description: tenant id
+        type: string
+      environment_id:
+        description: environment id
+        type: string
+        format: uuid4
+      user_id:
+        description: user id
+        type: string
+        format: uuid4
+      devices:
+        description: user devices
+        type: array
+        items:
+          $ref: "#/definitions/Device"
+  Device:
+    type: object
+    required:
+      - is_primary
+    properties:
+      device:
+        description: user device data
+        type: string
+      device_type:
+        description: user device type
+        type: string
+        enum:
+          - email
+          - phone
+      is_primary:
+        description: is device primary
+        type: boolean
+  UpdateDeviceData:
+    allOf:
+      - $ref: "#/definitions/UpdateDevice"
+  UpdateDevice:
+    type: object
+    required:
+      - devices
+    properties:
+      devices:
+        description: user devices
+        type: array
+        items:
+          $ref: "#/definitions/Device"
+
